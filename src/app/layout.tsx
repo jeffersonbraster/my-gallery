@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Jefferson Brandão",
-      url: "https://galeria.jeffersonbrandao.com.br",
+      url: new URL("https://galeria.jeffersonbrandao.com.br"),
     },
   ],
   creator: "Jefferson Brandão",
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Jefferson Brandão - Galeria",
     description: "Minha galeria de fotos ",
-    url: "https://galeria.jeffersonbrandao.com.br",
+    url: new URL("https://galeria.jeffersonbrandao.com.br"),
     siteName: "Jefferson Brandão - Galeria",
     images: [
       {
-        url: "https://galeria.jeffersonbrandao.com.br/og.png",
+        url: new URL("https://galeria.jeffersonbrandao.com.br"),
         width: 1800,
         height: 1000,
         alt: "Jefferson Brandão - Galeria",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Jefferson Brandão - Galeria",
     description: "Minha galeria de fotos ",
     images: {
-      url: "https://galeria.jeffersonbrandao.com.br/og.png",
+      url: new URL("https://galeria.jeffersonbrandao.com.br/og.png"),
       width: 1800,
       height: 1000,
       alt: "Jefferson Brandão - Galeria",
@@ -59,7 +59,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} bg-main antialiased`}>{children}</body>
     </html>
   );
 }

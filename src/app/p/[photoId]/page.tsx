@@ -1,9 +1,76 @@
-import React from 'react'
+import Carousel from '@/components/carousel'
+import cloudinary from '@/utils/cloudnary'
+import { CldOgImage } from 'next-cloudinary'
+import getBase64ImageUrl from '@/utils/generate-blur-placeholder'
+import type { ImageProps } from '@/utils/types'
+import getResults from '@/actions/actions'
 
-const PhotoPage = () => {
+interface HomeProps {
+  params: {
+    photoId: string
+  }
+}
+
+const Home = async ({ params }: HomeProps) => {
+  const results = await getResults()
+  let index = Number(params.photoId)
+
+  let reducedResults: ImageProps[] = []
+  let i = 0
+  for (let result of results.resources) {
+    reducedResults.push({
+      id: i,
+      height: result.height,
+      width: result.width,
+      aspect_ratio: result.aspect_ratio,
+      public_id: result.public_id,
+      format: result.format
+    })
+    i++
+  }
+
+  const currentPhoto = reducedResults.find(
+    img => img.id === Number(params.photoId)
+  )
+
+  currentPhoto!.blurDataUrl = await getBase64ImageUrl(currentPhoto!)
+
   return (
-    <div>PhotoPage</div>
+    <>
+      <CldOgImage src={currentPhoto!.public_id} alt="Jefferson Brandão - Foto" />
+
+      <main className="mx-auto max-w-[1960px] p-4">
+        <Carousel currentPhoto={currentPhoto!} index={index} />
+      </main>
+    </>
   )
 }
 
-export default PhotoPage
+export default Home
+
+export async function getStaticPaths() {
+  const results = await cloudinary.v2.search
+    .sort_by('folder', 'desc')
+    .max_results(2000)
+    .execute()
+
+  if (results?.next_cursor) {
+    const moreResults = await cloudinary.v2.search
+      .sort_by('folder', 'desc')
+      .next_cursor(results?.next_cursor)
+      .max_results(2000)
+      .execute()
+
+    results.resources = results.resources.concat(moreResults.resources)
+  }
+
+  let fullPaths = []
+  for (let i = 0; i < results.resources.length; i++) {
+    fullPaths.push({ params: { photoId: i.toString() } })
+  }
+
+  return {
+    paths: fullPaths,
+    fallback: false
+  }
+}
