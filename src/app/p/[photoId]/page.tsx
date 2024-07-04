@@ -4,10 +4,11 @@ import { CldOgImage } from 'next-cloudinary'
 import getBase64ImageUrl from '@/utils/generate-blur-placeholder'
 import type { ImageProps } from '@/utils/types'
 import getResults from '@/actions/actions'
+import { notFound } from 'next/navigation'
 
 interface HomeProps {
   params: {
-    photoId: string
+    photoId: string | string[]
   }
 }
 
@@ -33,14 +34,18 @@ const Home = async ({ params }: HomeProps) => {
     img => img.id === Number(params.photoId)
   )
 
-  currentPhoto!.blurDataUrl = await getBase64ImageUrl(currentPhoto!)
+  if (!currentPhoto) {
+    return notFound()
+  }
+
+  currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto)
 
   return (
     <>
-      <CldOgImage src={currentPhoto!.public_id} alt="Jefferson Brandão - Foto" />
+      <CldOgImage src={currentPhoto.public_id} alt="Jefferson Brandão - Foto" />
 
       <main className="mx-auto max-w-[1960px] p-4">
-        <Carousel currentPhoto={currentPhoto!} index={index} />
+        <Carousel currentPhoto={currentPhoto} index={index} />
       </main>
     </>
   )

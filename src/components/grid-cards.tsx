@@ -18,7 +18,6 @@ const GridCards = ({
   images: ImageProps[]
   folders: string[]
 }) => {
-  console.log(folders)
   const searchParams = useSearchParams()
   const photoId = searchParams.get('photoId') as string | string[]
   const [data, setData] = useState(images)

@@ -3,13 +3,21 @@ import { useState, useRef } from 'react'
 import useClickOutside from '@/hooks/useClickOutside'
 import { Filter } from 'lucide-react'
 
-export default function Menu({ folders, selectedFolder, setSelectedFolder }: any) {
+export default function Menu({
+  folders,
+  selectedFolder,
+  setSelectedFolder
+}: {
+  folders: string[]
+  selectedFolder: string
+  setSelectedFolder: (folder: string) => void
+}) {
   const $menu = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useClickOutside($menu, () => setMenuOpen(false))
 
-  const handleClick = (folder: any) => {
+  const handleClick = (folder: string) => {
     setSelectedFolder(folder)
     setMenuOpen(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -20,11 +28,11 @@ export default function Menu({ folders, selectedFolder, setSelectedFolder }: any
       <img
         src="arrow.png"
         alt="Filtre por lugar"
-        className="invisible fixed bottom-24 right-8 h-[450px] ultrawide:visible"
+        className="ultrawide:visible invisible fixed bottom-24 right-8 h-[450px]"
       />
 
       <button
-        className="fixed bottom-6 right-5 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-medium shadow-md transition hover:bg-medium/90 xl:h-16 xl:w-16"
+        className="bg-medium hover:bg-medium/90 fixed bottom-6 right-5 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full shadow-md transition xl:h-16 xl:w-16"
         onClick={() => setMenuOpen(!menuOpen)}
         title="Filter by place"
       >
@@ -32,7 +40,7 @@ export default function Menu({ folders, selectedFolder, setSelectedFolder }: any
       </button>
 
       <menu
-        className={`fixed bottom-20 right-5 mb-5 flex w-48 flex-col gap-2 rounded-lg bg-medium p-5 shadow-md transition ${
+        className={`bg-medium fixed bottom-20 right-5 mb-5 flex w-48 flex-col gap-2 rounded-lg p-5 shadow-md transition ${
           menuOpen ? 'visible' : 'invisible'
         }`}
       >
