@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { ImageProps } from '@/utils/types'
 import useKeypress from 'react-use-keypress'
 import SharedModal from './shared-modal'
@@ -10,14 +10,15 @@ import { motion } from 'framer-motion'
 
 const Modal = ({
   images,
-  onClose
+  onClose,
+  photoId
 }: {
   images: ImageProps[]
   onClose: () => void
+  photoId: string
 }) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const photoId = searchParams.get('photoId')
+
   let index = Number(photoId)
 
   let overlayRef = useRef<HTMLDivElement>(null)

@@ -1,15 +1,14 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Masonry } from 'react-plock'
+import Menu from '@/components/menu'
 import MainCard from '@/components/main-card'
 import ImageCard from '@/components/image-card'
+
 import { useLastViewedPhoto } from '@/utils/use-last-viewed-photo'
 import { INITIAL_LOAD_COUNT } from '@/utils/constants'
-import { ImageProps } from "@/utils/types";
-import Modal from './modal'
-import Menu from './menu'
+import { ImageProps } from '@/utils/types'
 
 const GridCards = ({
   images,
@@ -18,8 +17,6 @@ const GridCards = ({
   images: ImageProps[]
   folders: string[]
 }) => {
-  const searchParams = useSearchParams()
-  const photoId = searchParams.get('photoId') as string | string[]
   const [data, setData] = useState(images)
   const [selectedFolder, setSelectedFolder] = useState('All')
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto()
@@ -42,23 +39,14 @@ const GridCards = ({
 
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
-    if (lastViewedPhoto && !photoId) {
+    if (lastViewedPhoto) {
       lastViewedPhotoRef?.current?.scrollIntoView({ block: 'center' })
       setLastViewedPhoto(null)
     }
-  }, [photoId, lastViewedPhoto, setLastViewedPhoto])
+  }, [lastViewedPhoto, setLastViewedPhoto])
 
   return (
     <>
-      {photoId && (
-          <Modal
-            images={images}
-            onClose={() => {
-              setLastViewedPhoto(photoId)
-            }}
-          />
-      )}
-
       <Masonry
         items={visibleImages}
         config={{

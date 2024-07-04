@@ -1,20 +1,26 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import useKeypress from 'react-use-keypress'
 import { CldImage } from 'next-cloudinary'
+import SharedModal from './shared-modal'
+import Modal from './modal'
 import type { ImageProps } from '../utils/types'
 import { useLastViewedPhoto } from '@/utils/use-last-viewed-photo'
-import SharedModal from './shared-modal'
 
 export default function Carousel({
   index,
-  currentPhoto
+  currentPhoto,
+  images
 }: {
   index: number
   currentPhoto: ImageProps
+  images: ImageProps[]
 }) {
   const router = useRouter()
+  const pathname = usePathname()
+  const photoId = pathname.split('/')[2]
+
   const [, setLastViewedPhoto] = useLastViewedPhoto()
 
   function closeModal() {
@@ -51,6 +57,16 @@ export default function Carousel({
         closeModal={closeModal}
         navigation={false}
       />
+
+      {photoId && (
+          <Modal
+            images={images}
+            onClose={() => {
+              setLastViewedPhoto(photoId)
+            }}
+            photoId={photoId}
+          />
+      )}
     </div>
   )
 }
