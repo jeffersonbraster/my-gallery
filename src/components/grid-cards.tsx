@@ -7,7 +7,7 @@ import MainCard from '@/components/main-card'
 import ImageCard from '@/components/image-card'
 
 import { useLastViewedPhoto } from '@/utils/use-last-viewed-photo'
-import { INITIAL_LOAD_COUNT } from '@/utils/constants'
+import { CHUNK_SIZE, INITIAL_LOAD_COUNT } from '@/utils/constants'
 import { ImageProps } from '@/utils/types'
 
 const GridCards = ({
@@ -23,6 +23,29 @@ const GridCards = ({
   const [visibleImages, setVisibleImages] = useState<any[]>([])
 
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } = document.documentElement
+      const threshold = 400 // margin to start loading more before reaching the end
+  
+      if (scrollTop + clientHeight >= scrollHeight - threshold) {
+        const nextChunk = data.slice(
+          visibleImages.length,
+          visibleImages.length + CHUNK_SIZE
+        )
+        setVisibleImages(prevVisibleImages => [
+          ...prevVisibleImages,
+          ...nextChunk
+        ])
+      }
+    }
+  
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [visibleImages, data])
 
   useEffect(() => {
     const initialVisibleImages = data.slice(0, INITIAL_LOAD_COUNT)
