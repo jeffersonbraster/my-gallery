@@ -3,7 +3,9 @@ import Carousel from '@/components/carousel'
 import { CldOgImage } from 'next-cloudinary'
 import getBase64ImageUrl from '@/utils/generate-blur-placeholder'
 import type { ImageProps } from '@/utils/types'
-import getResults, { fetchImagesAndFolders } from '@/actions/actions'
+
+import { fetchImagesAndFolders } from '@/utils/fetch-images-folders'
+import getResults from '@/utils/cached-images-folders'
 
 interface HomeProps {
   params: {

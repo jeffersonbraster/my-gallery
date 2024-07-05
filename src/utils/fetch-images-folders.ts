@@ -1,10 +1,6 @@
-"use server"
-
 import cloudinary from "@/utils/cloudnary";
 import getBase64ImageUrl from "@/utils/generate-blur-placeholder";
 import { ImageProps } from "@/utils/types";
-
-let cachedResults: any;
 
 export async function fetchImagesAndFolders() {
   const results = await cloudinary.v2.search
@@ -58,30 +54,3 @@ export async function fetchImagesAndFolders() {
     folders
   };
 }
-
-export default async function getResults() {
-  if (!cachedResults) {
-    const fetchedResults = await cloudinary.v2.search
-      .sort_by('folder', 'desc')
-      .max_results(2000)
-      .execute()
-
-    if (fetchedResults?.next_cursor) {
-      const moreResults = await cloudinary.v2.search
-        .sort_by('folder', 'desc')
-        .next_cursor(fetchedResults?.next_cursor)
-        .max_results(2000)
-        .execute()
-
-      fetchedResults.resources = fetchedResults.resources.concat(
-        moreResults.resources
-      )
-    }
-
-    cachedResults = fetchedResults
-  }
-
-  return cachedResults
-}
-
-
